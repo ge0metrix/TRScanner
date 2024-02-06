@@ -8,8 +8,9 @@ from sqlalchemy.orm import relationship
 from typing import List
 from datetime import datetime as _dt
 
+
 class Call(_db.Base):
-    __tablename__ = 'calls'
+    __tablename__ = "calls"
     id = Column(Integer, primary_key=True, index=True)
     freq = Column(Integer, nullable=False)
     start_time = Column(DateTime, index=True, default=_dt.now)
@@ -21,17 +22,18 @@ class Call(_db.Base):
     encrypted = Column(Boolean)
     call_length = Column(Numeric)
     talkgroup = Column(Integer)
-    talkgroup_tag = Column(String(255))
-    talkgroup_description = Column(String(255))
-    talkgroup_group = Column(String(255))
-    talkgroup_group_tag = Column(String(255))
+    talkgroup_tag = Column(String(255), nullable=True)
+    talkgroup_description = Column(String(255), nullable=True)
+    talkgroup_group = Column(String(255), nullable=True)
+    talkgroup_group_tag = Column(String(255), nullable=True)
     audio_type = Column(String(255))
     short_name = Column(String(255))
     srcList = relationship("Src")
     freqList = relationship("Freq")
 
+
 class Src(_db.Base):
-    __tablename__ = 'call_sources'
+    __tablename__ = "call_sources"
     id = Column(Integer, primary_key=True, index=True)
     src = Column(Integer)
     time = Column(DateTime)
@@ -40,6 +42,7 @@ class Src(_db.Base):
     signal_system = Column(String(255))
     tag = Column(String(255))
     call_id = Column(Integer, ForeignKey("calls.id"))
+
 
 class Freq(_db.Base):
     __tablename__ = "call_freqs"
