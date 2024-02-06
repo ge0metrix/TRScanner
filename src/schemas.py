@@ -1,7 +1,7 @@
 import pydantic as _pd
 from typing import List, Optional, Annotated
 import datetime
-from models import *
+from database_models import *
 
 
 class SrcIn(_pd.BaseModel):
@@ -14,6 +14,9 @@ class SrcIn(_pd.BaseModel):
 
     class Meta:
         orm_model = Src
+
+    class Config:
+        from_attributes = True
 
 
 class SrcOut(SrcIn):
@@ -30,6 +33,9 @@ class FreqIn(_pd.BaseModel):
 
     class Meta:
         orm_model = Freq
+
+    class Config:
+        from_attributes = True
 
 
 class FreqOut(FreqIn):
@@ -58,6 +64,8 @@ class CallIn(_pd.BaseModel):
 
     class Meta:
         orm_model = Call
+    class Config:
+        from_attributes = True
 
 
 class CallOut(CallIn):

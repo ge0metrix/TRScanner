@@ -5,6 +5,7 @@ from schemas import *
 import controllers
 from typing import List
 import json
+from pydantic import ValidationError
 
 app = FastAPI()
 
@@ -49,6 +50,11 @@ def uploadcall(
     calldata: Annotated[str, Form(description="Json Call Data")],
     db: _orm.Session = Depends(controllers.get_db),
 ):
-    call = CallIn(**json.loads(calldata))
+    try:
+        call = CallIn(**json.loads(calldata))
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=e.errors())
+    except Exception as e:
+        raise HTTPException(status_code=500)
     print(file.size)
     return controllers.post_call_to_db(db=db, call=call)
