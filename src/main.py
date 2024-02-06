@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Depends, Form, HTTPException, UploadFile
-from fastapi.responses import RedirectResponse
-import sqlalchemy.orm as _orm
-from schemas import *
-import controllers
-from typing import List
 import json
+from typing import List
+
+import sqlalchemy.orm as _orm
+from fastapi import Depends, FastAPI, Form, HTTPException, UploadFile
+from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
+
+import controllers
+from schemas import *
 
 app = FastAPI()
 
@@ -35,13 +37,6 @@ def get_call(call_id: int, db: _orm.Session = Depends(controllers.get_db)):
     if not call:
         raise HTTPException(status_code=404, detail="Call Not Found")
     return call
-
-
-"""
-@app.post("/calls/")
-def post_call(call: CallIn, db: _orm.Session = Depends(controllers.get_db)):
-    return controllers.post_call_to_db(db=db, call=call)
-"""
 
 
 @app.post("/api/calls/", response_model=CallOut)

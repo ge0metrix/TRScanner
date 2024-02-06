@@ -1,5 +1,9 @@
 import sqlalchemy.orm as _orm
-import database_models as _models, schemas as _schemas, database as _database
+
+import database as _database
+import database_models as _models
+import schemas as _schemas
+
 
 def create_database():
     return _database.Base.metadata.create_all(bind=_database.engine)

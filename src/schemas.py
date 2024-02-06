@@ -1,6 +1,8 @@
-import pydantic as _pd
-from typing import List, Optional, Annotated
 import datetime
+from typing import Annotated, List, Optional
+
+import pydantic as _pd
+
 from database_models import *
 
 

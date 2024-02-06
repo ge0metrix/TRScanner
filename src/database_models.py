@@ -1,12 +1,12 @@
-import database as _db
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Numeric
-from sqlalchemy.types import DateTime
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import relationship
-from typing import List
 from datetime import datetime as _dt
+from typing import List
+
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
+                        Numeric, String)
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.types import DateTime
+
+import database as _db
 
 
 class Call(_db.Base):
