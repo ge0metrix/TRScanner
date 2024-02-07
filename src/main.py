@@ -2,7 +2,15 @@ import json
 from typing import List, Optional, Annotated
 
 import sqlalchemy.orm as _orm
-from fastapi import Depends, FastAPI, Form, HTTPException, UploadFile
+from fastapi import (
+    Depends,
+    FastAPI,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+    BackgroundTasks,
+)
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
@@ -56,8 +64,9 @@ def uploadcall(
 
 
 # TODO: Abstract this out to a model and do it better!
-@app.post("/api/calls/trunkrecorderupload/", response_model=CallOut)
+@app.post("/api/calls/trunkrecorderupload/")
 def uploadTRcall(
+    background_tasks: BackgroundTasks,
     file: UploadFile,
     system: str = Form(),
     systemLabel: str = Form(),
@@ -65,23 +74,26 @@ def uploadTRcall(
     frequency: int = Form(),
     key: str = Form(),
     talkgroup: int = Form(),
-    patches: List[int] = Form(None),
-    talkgroupGroup: str = Form(None),
-    talkgroupLabel: str = Form(None),
-    talkgroupTag: str = Form(None),
-    talkgroupName: str = Form(None),
-    sources: List[SrcIn] = Form(None),
-    frequencies: List[FreqIn] = Form(None),
+    patches: List[int] | None = Form(None),
+    talkgroupGroup: str | None = Form(None),
+    talkgroupLabel: str | None = Form(None),
+    talkgroupTag: str | None = Form(None),
+    talkgroupName: str | None = Form(None),
+    sources: List[str] | None = Form(None),
+    frequencies: List[str] | None = Form(None),
     db: _orm.Session = Depends(controllers.get_db),
 ):
-    pass
-    """
-    try:
-        call = CallIn(**json.loads(calldata))
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail=e.errors())
-    except Exception as e:
-        raise HTTPException(status_code=500)
-    print(file.size)
-    return controllers.post_call_to_db(db=db, call=call)
-    """
+    filedata = file.file.read()
+    
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No FileName provided!")
+    
+    background_tasks.add_task(
+        WriteFileToDisk, filename=file.filename, filedata=filedata
+    )
+
+
+def WriteFileToDisk(filename: str, filedata: bytes) -> None:
+    print(f"Writing {filename}")
+    with open(filename, "bw") as file:
+        file.write(filedata)
