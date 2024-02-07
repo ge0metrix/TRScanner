@@ -66,6 +66,7 @@ class CallIn(_pd.BaseModel):
 
     class Meta:
         orm_model = Call
+
     class Config:
         from_attributes = True
 
